@@ -26,7 +26,7 @@
     "asyncdi": "^1.1.0",
     "babelify": "^10.0.0",
     "babyparse": "^0.4.6",
-    "bcrypt-nodejs": "^0.0.3",
+    "bcrypt": "^5.0.0",
     "blacklist": "^1.1.4",
     "body-parser": "^1.19.0",
     "brfs": "^2.0.2",
