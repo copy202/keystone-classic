@@ -34,10 +34,11 @@ module.exports = function createApp (keystone, express) {
 	// Pre static config
 	if (typeof keystone.get('pre:static') === 'function') {
 		keystone.get('pre:static')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:static', req, res, next);
+		});
 	}
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:static', req, res, next);
-	});
+
 
 	// Serve static assets
 
@@ -58,9 +59,12 @@ module.exports = function createApp (keystone, express) {
 	require('./bindSessionMiddleware')(keystone, app);
 
 	// Log dynamic requests
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:logger', req, res, next);
-	});
+	if (typeof keystone.get('pre:logger') === 'function') {
+		keystone.get('pre:logger')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:logger', req, res, next);
+		});
+	}
 	// Bind default logger (morgan)
 	if (keystone.get('logger')) {
 		var loggerOptions = keystone.get('logger options');
@@ -85,20 +89,22 @@ module.exports = function createApp (keystone, express) {
 	if (!keystone.get('headless')) {
 		if (typeof keystone.get('pre:admin') === 'function') {
 			keystone.get('pre:admin')(app);
+			app.use(function (req, res, next) {
+				keystone.callHook('pre:admin', req, res, next);
+			});
 		}
-		app.use(function (req, res, next) {
-			keystone.callHook('pre:admin', req, res, next);
-		});
+
 		app.use('/' + keystone.get('admin path'), require('../admin/server').createDynamicRouter(keystone));
 	}
 
 	// Pre bodyparser middleware
 	if (typeof keystone.get('pre:bodyparser') === 'function') {
 		keystone.get('pre:bodyparser')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:bodyparser', req, res, next);
+		});
 	}
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:bodyparser', req, res, next);
-	});
+
 
 	require('./bindBodyParser')(keystone, app);
 	app.use(methodOverride());
@@ -117,10 +123,11 @@ module.exports = function createApp (keystone, express) {
 	// Pre route config
 	if (typeof keystone.get('pre:routes') === 'function') {
 		keystone.get('pre:routes')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:routes', req, res, next);
+		});
 	}
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:routes', req, res, next);
-	});
+
 
 	// Configure application routes
 	var appRouter = keystone.get('routes');
@@ -147,10 +154,11 @@ module.exports = function createApp (keystone, express) {
 	// Error config
 	if (typeof keystone.get('pre:error') === 'function') {
 		keystone.get('pre:error')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:error', req, res, next);
+		});
 	}
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:error', req, res, next);
-	});
+
 	require('./bindErrorHandlers')(keystone, app);
 
 	return app;
