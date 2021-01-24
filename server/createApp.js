@@ -28,8 +28,8 @@ module.exports = function createApp (keystone, express) {
 
 	// Compress response bodies
 	if (keystone.get('compress')) {
-		var loggerOptions = keystone.get('compress options') || {};
-		app.use(compression(loggerOptions));
+		var compressOptions = keystone.get('compress options') || {};
+		app.use(compression(compressOptions));
 	}
 
 	// Pre static config
