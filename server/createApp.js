@@ -108,7 +108,9 @@ module.exports = function createApp (keystone, express) {
 
 
 	require('./bindBodyParser')(keystone, app);
-	app.use(methodOverride());
+	if (!keystone.get('methodOverride')) {
+		app.use(methodOverride());
+	}
 
 	// Set language preferences
 	var languageOptions = keystone.get('language options') || {};
