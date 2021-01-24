@@ -5,10 +5,10 @@ module.exports = function bindSessionMiddleware (keystone, app) {
 	// pre:session hooks
 	if (typeof keystone.get('pre:session') === 'function') {
 		keystone.get('pre:session')(app);
+		app.use(function (req, res, next) {
+			keystone.callHook('pre:session', req, res, next);
+		});
 	}
-	app.use(function (req, res, next) {
-		keystone.callHook('pre:session', req, res, next);
-	});
 
 	app.use(keystone.expressSession);
 	app.use(require('connect-flash')());
